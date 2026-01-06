@@ -1,0 +1,9 @@
+name = "mio-pages-compose-html"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "composeApp/build/dist/wasmJs/productionExecutable"
+
+# 绑定你的 D1 数据库
+[[d1_databases]]
+binding = "DB" # 在代码里通过这个名字调用数据库
+database_name = "my-blog-db"
+database_id = "a28e750d-7981-4a20-827f-e1a3206e0269"
