@@ -1,0 +1,14 @@
+# 为所有 .wasm 文件设置正确的类型，确保 Cloudflare 进行 Brotli 压缩
+/*.wasm
+  Content-Type: application/wasm
+  Cache-Control: public, max-age=31536000, immutable
+
+# 为 JS 和 CSS 文件设置长缓存
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# 字体文件缓存
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
