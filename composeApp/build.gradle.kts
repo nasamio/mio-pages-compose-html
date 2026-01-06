@@ -19,23 +19,30 @@ kotlin {
         binaries.executable()
     }
 
+    // --- 关键修改：即使代码在 wasmJsMain，资源也建议引用 commonMain 路径 ---
     sourceSets {
-        val wasmJsMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(libs.androidx.lifecycle.viewmodelCompose)
-                implementation(libs.androidx.lifecycle.runtimeCompose)
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources) // 资源库
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
 
-                // Ktor 网络库依赖
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
-            }
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+        }
+
+        val wasmJsMain by getting {
         }
     }
+}
+
+// --- 关键修改：显式指定资源的包名 ---
+compose.resources {
+    publicResClass = true // 设为公开
+    packageOfResClass = "com.mio.web" // 这里的包名必须和包名一致
 }

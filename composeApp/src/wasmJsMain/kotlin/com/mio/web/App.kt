@@ -1,40 +1,48 @@
 package com.mio.web
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
-
-// Ktor 相关导入
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.ktor.client.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.Font
 
 @Composable
 fun App() {
-    MaterialTheme {
+    // 1. 初始化自定义字体
+    val customFontFamily = FontFamily(
+        Font(Res.font.font)
+    )
+
+    // 2. 配置 MaterialTheme 默认使用该字体
+    val customTypography = Typography(
+        bodyLarge = TextStyle(fontFamily = customFontFamily),
+        bodyMedium = TextStyle(fontFamily = customFontFamily),
+        labelLarge = TextStyle(fontFamily = customFontFamily),
+        titleMedium = TextStyle(fontFamily = customFontFamily)
+    )
+
+    MaterialTheme(typography = customTypography) {
         var showContent by remember { mutableStateOf(false) }
         var dbData by remember { mutableStateOf("点击按钮加载数据库数据...") }
         val scope = rememberCoroutineScope()
 
-        // 初始化 HttpClient (通常在生产环境中，这应该是个单例)
+        // 初始化 HttpClient
         val client = remember {
             HttpClient {
                 install(ContentNegotiation) {
@@ -53,6 +61,16 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 此处的 Text 会自动应用上面 Typography 定义的自定义字体
+            Text(
+                text = "正在使用 font.ttf 字体",
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(onClick = {
                 showContent = !showContent
 
@@ -73,17 +91,19 @@ fun App() {
                 Text("Click me to fetch D1!")
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             Text(text = dbData)
 
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+                // 假设 Greeting 类在同一包或已导入
+                val greeting = remember { "Hello!" }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(Icons.Default.ShoppingCart, null)
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    Text("Compose Greeting: $greeting")
                 }
             }
         }
